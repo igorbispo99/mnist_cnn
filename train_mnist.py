@@ -73,16 +73,18 @@ def generate_mnist():
     return x_train, y_train, x_test, y_test
 
 datagen = ImageDataGenerator(
-        rotation_range=90,
-        width_shift_range=0.4,
-        height_shift_range=0.4
+        rotation_range=60,
+        shear_range=0.3,
+        zoom_range=0.3,
+        width_shift_range=0.3,
+        height_shift_range=0.3
     )
 
 
 model = instantiate_cnn()
 x_train, y_train, x_test, y_test = generate_mnist()
 
-model.fit_generator(datagen.flow(x_train, y_train, batch_size=32), steps_per_epoch=len(x_train)/32, epochs=10, validation_data=(x_test, y_test))
+model.fit_generator(datagen.flow(x_train, y_train, batch_size=32), steps_per_epoch=len(x_train)/32, epochs=20, validation_data=(x_test, y_test))
 
 model.save("mnist_cnn.h5")
 

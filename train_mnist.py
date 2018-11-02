@@ -2,7 +2,7 @@ import os
 os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 
 import numpy as np
-
+import scipy.ndimage
 import keras
 
 from keras.utils import to_categorical
@@ -72,11 +72,18 @@ def generate_mnist():
 
     return x_train, y_train, x_test, y_test
 
+datagen = ImageDataGenerator(
+        rotation_range=90,
+        width_shift_range=0.4,
+        height_shift_range=0.4
+    )
+
+
 model = instantiate_cnn()
 x_train, y_train, x_test, y_test = generate_mnist()
 
-model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
-model.save("mnist_cnn.h5")
+model.fit_generator(datagen.flow(x_train, y_train, batch_size=32), steps_per_epoch=len(x_train)/32, epochs=10, validation_data=(x_test, y_test))
 
+model.save("mnist_cnn.h5")
 
 
